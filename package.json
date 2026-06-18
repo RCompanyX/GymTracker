@@ -1,0 +1,23 @@
+{
+  "name": "gymtracker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Visualizador de pesajes Tanita con gráficos, estadísticas y modo claro/oscuro.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve": "npx serve dist -l 5173"
+  },
+  "dependencies": {
+    "date-fns": "^4.1.0",
+    "echarts": "^5.5.1",
+    "papaparse": "^5.4.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "tailwindcss": "^4.0.0",
+    "vite": "^6.0.0"
+  }
+}
