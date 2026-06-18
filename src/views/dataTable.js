@@ -1,6 +1,7 @@
 import { el } from '../lib/dom.js';
 import { state, t } from '../lib/state.js';
 import { fmtDate, fmtNumber } from '../lib/format.js';
+import { icon } from '../lib/icons.js';
 
 const COLUMNS = [
   { field: 'date', label: () => t('table.date'), render: m => fmtDate(m.date) },
@@ -58,7 +59,7 @@ export function DataTable(measurements) {
   for (const c of COLUMNS) {
     const isActive = sortField === c.field;
     trh.appendChild(el('th', {
-      class: 'text-left px-3 py-2 font-medium text-[var(--color-fg-muted)] cursor-pointer select-none',
+      class: 'text-left px-3 py-2 font-medium text-[var(--color-fg-muted)] cursor-pointer select-none whitespace-nowrap hover:text-[var(--color-fg)] transition-colors',
       onclick: () => {
         if (sortField === c.field) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
         else { sortField = c.field; sortDir = c.field === 'date' ? 'desc' : 'asc'; }
@@ -68,14 +69,14 @@ export function DataTable(measurements) {
       }
     }, [
       el('span', {}, c.label()),
-      isActive ? el('span', { class: 'ml-1 opacity-70' }, sortDir === 'asc' ? '↑' : '↓') : null
+      isActive ? icon(sortDir === 'asc' ? 'chevron-up' : 'chevron-down', { size: 12, class: 'ml-1 inline-block align-middle' }) : null
     ]));
   }
   thead.appendChild(trh);
 
   const tbody = el('tbody');
   for (const m of slice) {
-    const tr = el('tr', { class: 'border-t border-[var(--color-border)]' });
+    const tr = el('tr', { class: 'border-t border-[var(--color-border)] transition-colors hover:bg-[var(--color-surface-2)]' });
     for (const c of COLUMNS) tr.appendChild(el('td', { class: 'px-3 py-2 font-mono' }, c.render(m) ?? '—'));
     tbody.appendChild(tr);
   }
@@ -87,25 +88,28 @@ export function DataTable(measurements) {
       `${page * PAGE_SIZE + 1}–${Math.min((page + 1) * PAGE_SIZE, sorted.length)} / ${sorted.length}`),
     el('div', { class: 'flex items-center gap-2' }, [
       el('button', {
-        class: 'px-2 py-1 rounded border border-[var(--color-border)] disabled:opacity-40',
+        class: 'w-8 h-8 inline-flex items-center justify-center rounded border border-[var(--color-border)] disabled:opacity-40 hover:bg-[var(--color-surface-2)] transition-colors',
         disabled: page === 0,
         onclick: () => { page--; refresh(state.measurements); }
-      }, '‹'),
+      }, icon('chevron-left', { size: 14 })),
       el('span', { class: 'font-mono' }, `${page + 1}/${totalPages}`),
       el('button', {
-        class: 'px-2 py-1 rounded border border-[var(--color-border)] disabled:opacity-40',
+        class: 'w-8 h-8 inline-flex items-center justify-center rounded border border-[var(--color-border)] disabled:opacity-40 hover:bg-[var(--color-surface-2)] transition-colors',
         disabled: page >= totalPages - 1,
         onclick: () => { page++; refresh(state.measurements); }
-      }, '›')
+      }, icon('chevron-right', { size: 14 }))
     ])
   ]);
 
   const toolbar = el('div', { class: 'flex items-center justify-between mb-3' }, [
-    el('h2', { class: 'text-lg font-semibold' }, 'Tabla'),
+    el('h2', { class: 'text-lg font-semibold flex items-center gap-2' }, [
+      icon('file-up', { size: 16, class: 'text-[var(--color-brand)]' }),
+      t('table.date') + 's'
+    ]),
     el('button', {
-      class: 'px-3 py-1.5 rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] text-sm hover:bg-[var(--color-surface-2)]',
+      class: 'inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] text-sm hover:bg-[var(--color-surface-2)] transition-colors',
       onclick: () => exportCsv(sorted)
-    }, 'Export CSV')
+    }, [icon('download', { size: 14 }), t('actions.exportCsv')])
   ]);
 
   return el('div', {}, [

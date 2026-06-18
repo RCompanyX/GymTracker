@@ -14,9 +14,10 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          echarts: ['echarts'],
+          apexcharts: ['apexcharts'],
           papaparse: ['papaparse'],
-          datefns: ['date-fns', 'date-fns/locale']
+          datefns: ['date-fns', 'date-fns/locale'],
+          lucide: ['lucide']
         }
       }
     }

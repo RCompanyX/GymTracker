@@ -1,12 +1,12 @@
 import { el } from '../lib/dom.js';
 import { mountLineChart } from '../lib/charts.js';
-import { asPoints, stats, slopePerWeek } from '../lib/stats.js';
+import { asPoints, stats } from '../lib/stats.js';
 import { fmtNumber, fmtSigned, fmtPercent } from '../lib/format.js';
-import { t } from '../lib/state.js';
+import { state } from '../lib/state.js';
 
 export function MetricChart({ field, label, unit, measurements }) {
   const container = el('div', {
-    class: 'rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-2)] p-4'
+    class: 'rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 transition-colors hover:border-[var(--color-brand)]/40'
   });
 
   const points = asPoints(measurements, field);
@@ -17,15 +17,14 @@ export function MetricChart({ field, label, unit, measurements }) {
   }
 
   const s = stats(points.map(p => p.y));
-  const slope = slopePerWeek(points);
 
-  const header = el('div', { class: 'flex items-baseline justify-between mb-2' }, [
-    el('div', {}, [
-      el('div', { class: 'text-sm font-medium' }, label),
+  const header = el('div', { class: 'flex items-baseline justify-between mb-3 gap-2' }, [
+    el('div', { class: 'min-w-0' }, [
+      el('div', { class: 'text-sm font-medium truncate' }, label),
       el('div', { class: 'text-xs text-[var(--color-fg-muted)]' },
         `min ${fmtNumber(s.min, 1)} · max ${fmtNumber(s.max, 1)} · avg ${fmtNumber(s.avg, 1)}${unit ? ' ' + unit : ''}`)
     ]),
-    el('div', { class: 'text-right' }, [
+    el('div', { class: 'text-right shrink-0' }, [
       el('div', { class: 'text-lg font-mono' }, fmtNumber(s.last, 1) + (unit ? ' ' + unit : '')),
       s.delta != null ? el('div', {
         class: 'text-xs',
@@ -34,12 +33,23 @@ export function MetricChart({ field, label, unit, measurements }) {
     ])
   ]);
 
-  const chartEl = el('div', { class: 'w-full h-48' });
+  const chartEl = el('div', { class: 'w-full' });
+  chartEl.style.height = '220px';
   container.append(header, chartEl);
 
-  requestAnimationFrame(() => {
+  requestAnimationFrame(async () => {
     if (!container.isConnected) return;
-    mountLineChart(chartEl, points, { area: true });
+    try {
+      await mountLineChart(chartEl, points, {
+        area: true,
+        label,
+        unit,
+        measurements: state.measurements,
+        height: 220
+      });
+    } catch (e) {
+      console.warn('Chart mount failed:', e);
+    }
   });
 
   return container;
@@ -47,7 +57,7 @@ export function MetricChart({ field, label, unit, measurements }) {
 
 export function MetricGrid({ fields, measurements }) {
   if (fields.length === 0) return null;
-  const grid = el('div', { class: 'grid grid-cols-1 lg:grid-cols-2 gap-4' });
+  const grid = el('div', { class: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' });
   for (const f of fields) {
     grid.appendChild(MetricChart({
       field: f.field, label: f.label, unit: f.unit, measurements

@@ -2,6 +2,7 @@ import { el } from '../lib/dom.js';
 import { asPoints, stats, slopePerWeek } from '../lib/stats.js';
 import { fmtNumber, fmtSigned, fmtPercent } from '../lib/format.js';
 import { t } from '../lib/state.js';
+import { icon } from '../lib/icons.js';
 
 export function StatsTable({ fields, measurements }) {
   const rows = fields.map(f => {
@@ -17,14 +18,14 @@ export function StatsTable({ fields, measurements }) {
   for (const c of [
     t('table.metric'), t('table.min'), t('table.max'), t('table.avg'),
     t('table.last'), t('table.delta'), t('table.deltaPct'), t('table.trend')
-  ]) trh.appendChild(el('th', { class: 'text-left px-3 py-2 font-medium text-[var(--color-fg-muted)]' }, c));
+  ]) trh.appendChild(el('th', { class: 'text-left px-3 py-2 font-medium text-[var(--color-fg-muted)] whitespace-nowrap' }, c));
   thead.appendChild(trh);
 
   const tbody = el('tbody');
   for (const r of rows) {
     if (!r.hasData) continue;
-    const tr = el('tr', { class: 'border-t border-[var(--color-border)]' });
-    const cls = 'px-3 py-2 font-mono';
+    const tr = el('tr', { class: 'border-t border-[var(--color-border)] transition-colors hover:bg-[var(--color-surface-2)]' });
+    const cls = 'px-3 py-2 font-mono whitespace-nowrap';
     const deltaColor = r.s.delta == null ? null
       : r.s.delta === 0 ? 'var(--color-fg-muted)'
       : r.s.delta > 0 ? 'var(--color-success)' : 'var(--color-danger)';

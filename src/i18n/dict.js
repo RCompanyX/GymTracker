@@ -49,7 +49,8 @@ export const es = {
     last: 'Último',
     delta: 'Δ',
     deltaPct: 'Δ %',
-    trend: 'Tendencia/sem'
+    trend: 'Tendencia/sem',
+    consistency: 'Consistencia'
   },
   metrics: {
     weight: 'Peso',
@@ -123,7 +124,8 @@ export const en = {
     last: 'Last',
     delta: 'Δ',
     deltaPct: 'Δ %',
-    trend: 'Trend/week'
+    trend: 'Trend/week',
+    consistency: 'Consistency'
   },
   metrics: {
     weight: 'Weight',

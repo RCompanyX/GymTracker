@@ -1,5 +1,6 @@
 import { el } from '../lib/dom.js';
 import { state, setRange, t } from '../lib/state.js';
+import { icon } from '../lib/icons.js';
 
 const PRESETS = [
   { key: 'all', labelKey: 'range.all' },
@@ -14,25 +15,24 @@ export function RangePicker() {
     class: 'inline-flex rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-2)] p-0.5'
   });
 
-  const update = () => {
-    group.innerHTML = '';
-    for (const p of PRESETS) {
-      const active = state.range.preset === p.key;
-      group.appendChild(el('button', {
-        class: [
-          'px-3 py-1.5 text-sm rounded-md transition-colors',
-          active
-            ? 'bg-[var(--color-surface)] text-[var(--color-fg)] shadow-sm'
-            : 'text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]'
-        ].join(' '),
-        onclick: () => setRange(p.key)
-      }, t(p.labelKey)));
-    }
-  };
+  for (const p of PRESETS) {
+    const active = state.range.preset === p.key;
+    group.appendChild(el('button', {
+      class: [
+        'px-3 py-1.5 text-sm rounded-md transition-colors',
+        active
+          ? 'bg-[var(--color-surface)] text-[var(--color-fg)] shadow-sm'
+          : 'text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]'
+      ].join(' '),
+      onclick: () => setRange(p.key)
+    }, t(p.labelKey)));
+  }
 
-  update();
-  return el('div', { class: 'flex items-center gap-3' }, [
-    el('span', { class: 'text-sm text-[var(--color-fg-muted)]' }, t('range.label') + ':'),
+  return el('div', { class: 'flex items-center gap-2' }, [
+    el('span', { class: 'inline-flex items-center gap-1.5 text-sm text-[var(--color-fg-muted)]' }, [
+      icon('calendar', { size: 14 }),
+      t('range.label') + ':'
+    ]),
     group
   ]);
 }

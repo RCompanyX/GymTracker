@@ -7,16 +7,28 @@ Visualizador web personal de pesajes Tanita. Sin servidor, sin base de datos: t�
 - **Importación directa** del CSV exportado por la app Tanita.
 - **File System Access API**: la app recuerda la carpeta y carga el CSV más reciente automáticamente (Chrome / Edge / Brave / Opera).
 - **Fallback a file picker** en Firefox / Safari / móvil.
-- **Dashboard** con KPIs (peso actual, Δ desde inicio, Δ 7d, IMC, grasa, masa muscular).
-- **Gráficos** de cada métrica con Apache ECharts (zoom, brush, tooltips).
-- **Selector de rango** (Todo / 1m / 3m / 6m / 1y) para comparar periodos arbitrarios.
+- **Dashboard** con KPIs (peso actual, Δ desde inicio, Δ 7d, IMC, grasa, masa muscular) — cada uno con **sparkline**.
+- **Gráficos** de cada métrica con **ApexCharts**: línea + área degradada, marcadores de max/min, línea de promedio, zoom, brush (selección arrastrando), tooltips ricos.
+- **Tooltip rico**: al pasar sobre cualquier chart se muestran **todas las métricas del mismo día** en una mini-tabla.
+- **Calendario de consistencia** estilo GitHub: visualiza qué días te pesaste.
+- **Selector de rango** (Todo / 1m / 3m / 6m / 1y) y rango custom vía brush.
 - **Estadísticas** por métrica (min, max, media, último, Δ, Δ%, slope semanal).
 - **Tabla cruda** con ordenación, paginación y export a CSV.
 - **Toggle de métricas** visibles (persiste en `localStorage`).
-- **Modo claro / oscuro / sistema** sincronizado entre UI y gráficos.
+- **Modo claro / oscuro / sistema** sincronizado entre UI, gráficos y sparklines.
 - **Bilingüe** ES / EN con switcher.
+- **Iconos** Lucide en toda la UI (header, KPIs, botones, tabla, empty states).
+- **Empty states** ilustrados, **transiciones suaves** en hover/tema.
 - **Multi-dispositivo** colocando la carpeta de CSVs en OneDrive / Google Drive / Dropbox / iCloud.
 - **Sin backend**, sin tracking, sin licencias de pago.
+
+## Stack
+
+- **Build**: Vite 6 + Tailwind v4
+- **Charts**: [ApexCharts](https://apexcharts.com/) (MIT) — ~167 KB gzipped
+- **Iconos**: [Lucide](https://lucide.dev/) (ISC) — tree-shaken, ~1.5 KB gzipped
+- **CSV**: PapaParse (MIT)
+- **Fechas**: date-fns (MIT)
 
 ## Requisitos
 

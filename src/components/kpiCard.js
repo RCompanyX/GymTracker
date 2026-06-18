@@ -1,28 +1,63 @@
 import { el } from '../lib/dom.js';
 import { fmtNumber, fmtSigned, fmtPercent } from '../lib/format.js';
-import { stats, deltaOverWindow, asPoints } from '../lib/stats.js';
+import { stats, deltaOverWindow, asPoints, slopePerWeek } from '../lib/stats.js';
 import { t, state } from '../lib/state.js';
+import { icon } from '../lib/icons.js';
+import { mountSparkline } from '../lib/charts.js';
 
-export function KpiCard({ label, value, sub, trend }) {
+const REGISTRY = new WeakMap();
+
+export function KpiCard({ label, value, sub, trend, sparkline, sparklineColor, trendInverse = false }) {
+  const container = el('div', {
+    class: 'rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 flex flex-col gap-2 transition-colors hover:border-[var(--color-brand)]/40'
+  });
+
   let trendEl = null;
   if (trend != null && Number.isFinite(trend)) {
     const positive = trend > 0;
     const negative = trend < 0;
-    const color = positive ? 'var(--color-success)' : negative ? 'var(--color-danger)' : 'var(--color-fg-muted)';
-    const arrow = positive ? '↑' : negative ? '↓' : '·';
-    trendEl = el('div', { class: 'text-xs mt-1 flex items-center gap-1', style: { color } }, [
-      el('span', {}, arrow),
-      el('span', {}, fmtSigned(trend, 1))
+    const goodPositive = !trendInverse;
+    const isGood = positive ? goodPositive : !goodPositive;
+    const color = trend === 0 ? 'var(--color-fg-muted)'
+      : isGood ? 'var(--color-success)' : 'var(--color-danger)';
+    const TrendIcon = positive ? 'trending-up' : negative ? 'trending-down' : 'minus';
+    trendEl = el('div', { class: 'text-xs flex items-center gap-1', style: { color } }, [
+      icon(TrendIcon, { size: 12 }),
+      el('span', { class: 'font-mono' }, fmtSigned(trend, 1))
     ]);
   }
-  return el('div', {
-    class: 'rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-2)] p-4'
-  }, [
+
+  container.append(
     el('div', { class: 'text-xs text-[var(--color-fg-muted)] uppercase tracking-wide' }, label),
-    el('div', { class: 'text-2xl font-semibold mt-1 font-mono' }, value),
-    sub ? el('div', { class: 'text-xs text-[var(--color-fg-muted)] mt-1' }, sub) : null,
-    trendEl
-  ]);
+    el('div', { class: 'text-2xl font-semibold font-mono' }, value),
+    el('div', { class: 'flex items-center justify-between gap-2' }, [
+      sub ? el('div', { class: 'text-xs text-[var(--color-fg-muted)] truncate' }, sub) : el('div'),
+      trendEl
+    ])
+  );
+
+  if (sparkline && sparkline.length > 1) {
+    const chartEl = el('div', { class: 'w-full -mb-1' });
+    chartEl.style.height = '52px';
+    container.appendChild(chartEl);
+    requestAnimationFrame(async () => {
+      if (!container.isConnected) return;
+      const existing = REGISTRY.get(container);
+      if (existing) existing.dispose();
+      try {
+        const inst = await mountSparkline(chartEl, sparkline, {
+          color: sparklineColor,
+          height: 52,
+          fill: true
+        });
+        REGISTRY.set(container, inst);
+      } catch (e) {
+        console.warn('Sparkline mount failed:', e);
+      }
+    });
+  }
+
+  return container;
 }
 
 function bmiCategory(bmi, lang) {
@@ -32,40 +67,55 @@ function bmiCategory(bmi, lang) {
   return lang === 'es' ? 'Obesidad' : 'Obesity';
 }
 
+function disposeKpiSparklines() {
+  for (const inst of REGISTRY.values?.() || []) {
+    if (inst?.dispose) inst.dispose();
+  }
+}
+
 export function KpiGrid(measurements) {
   if (measurements.length === 0) return null;
 
   const last = measurements[measurements.length - 1];
   const first = measurements[0];
-  const d7 = deltaOverWindow(asPoints(measurements, 'weight'), 7);
+  const weightPoints = asPoints(measurements, 'weight');
+  const d7 = deltaOverWindow(weightPoints, 7);
   const dStart = last.weight != null && first.weight != null ? last.weight - first.weight : null;
   const dStartPct = first.weight != null && first.weight !== 0 && dStart != null
     ? (dStart / first.weight) * 100 : null;
+  const weightSlope = slopePerWeek(weightPoints);
 
   const cards = [
     KpiCard({
       label: t('kpi.currentWeight'),
       value: fmtNumber(last.weight, 1) + ' kg',
       sub: last.date ? new Date(last.date).toISOString().slice(0, 10) : null,
-      trend: d7
+      trend: d7,
+      sparkline: weightPoints,
+      trendInverse: false
     }),
     KpiCard({
       label: t('kpi.deltaFromStart'),
       value: fmtSigned(dStart, 1, ' kg'),
-      sub: dStartPct != null ? fmtPercent(dStartPct, 1) : null
+      sub: dStartPct != null ? fmtPercent(dStartPct, 1) : null,
+      sparkline: weightPoints.map(p => ({ x: p.x, y: last.weight != null ? p.y - first.weight : null })),
+      trendInverse: false
     }),
     KpiCard({
       label: t('kpi.bmi'),
       value: fmtNumber(last.bmi, 1),
-      sub: last.bmi != null ? bmiCategory(last.bmi, state.lang) : null
+      sub: last.bmi != null ? bmiCategory(last.bmi, state.lang) : null,
+      sparkline: asPoints(measurements, 'bmi')
     }),
     KpiCard({
       label: t('kpi.bodyFat'),
-      value: fmtNumber(last.bodyFat, 1) + '%'
+      value: fmtNumber(last.bodyFat, 1) + '%',
+      sparkline: asPoints(measurements, 'bodyFat')
     }),
     KpiCard({
       label: t('kpi.muscleMass'),
-      value: fmtNumber(last.muscleMass, 1) + ' kg'
+      value: fmtNumber(last.muscleMass, 1) + ' kg',
+      sparkline: asPoints(measurements, 'muscleMass')
     })
   ];
 

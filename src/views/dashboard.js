@@ -5,6 +5,8 @@ import { MetricsToggle } from '../components/metricsToggle.js';
 import { MetricGrid } from '../components/metricChart.js';
 import { StatsTable } from '../components/statsTable.js';
 import { DataTable } from './dataTable.js';
+import { ConsistencyCalendar } from '../components/consistencyCalendar.js';
+import { EmptyState } from '../components/emptyState.js';
 import { state, filteredMeasurements, t } from '../lib/state.js';
 
 const FIELDS = [
@@ -23,13 +25,18 @@ const FIELDS = [
 export function Dashboard() {
   const visible = FIELDS.filter(f => state.visibleMetrics.includes(f.field));
   const data = filteredMeasurements();
+  const fullData = state.measurements;
 
-  const wrap = el('div', { class: 'mx-auto max-w-6xl px-4 sm:px-6 py-6 space-y-6' });
+  const wrap = el('div', { class: 'mx-auto max-w-[1600px] px-4 sm:px-6 py-6 space-y-6' });
+
+  if (fullData.length === 0) return wrap;
 
   if (data.length === 0) {
-    wrap.appendChild(el('div', {
-      class: 'rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-2)] p-8 text-center text-[var(--color-fg-muted)]'
-    }, t('empty.noMeasurementsInRange')));
+    wrap.appendChild(EmptyState({
+      iconName: 'calendar',
+      title: t('empty.noMeasurementsInRange'),
+      hint: t('range.label') + ': ' + t('range.all')
+    }));
     return wrap;
   }
 
@@ -40,6 +47,7 @@ export function Dashboard() {
   wrap.appendChild(controls);
 
   wrap.appendChild(KpiGrid(data));
+  wrap.appendChild(ConsistencyCalendar({ measurements: fullData }));
   wrap.appendChild(MetricGrid({
     fields: visible.map(f => ({ field: f.field, label: f.label(), unit: f.unit })),
     measurements: data

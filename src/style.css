@@ -45,12 +45,132 @@ html, body {
 
 body {
   font-family: var(--font-sans);
+  transition: background-color 200ms ease, color 200ms ease;
 }
 
 * {
   border-color: var(--color-border);
 }
 
+.transition-colors {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
 .scrollbar-thin::-webkit-scrollbar { width: 8px; height: 8px; }
 .scrollbar-thin::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
 .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+
+header.sticky {
+  transition: box-shadow 200ms ease, background-color 200ms ease;
+}
+
+header.sticky.scrolled {
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.05);
+}
+
+:root[data-theme="dark"] header.sticky.scrolled {
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+}
+
+.apexcharts-tooltip.apex-tooltip,
+.apexcharts-tooltip {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.apexcharts-canvas,
+.apexcharts-canvas svg,
+.apexcharts-svg,
+.apexcharts-inner,
+.apexcharts-grid,
+.apexcharts-gridline,
+.apexcharts-xaxis,
+.apexcharts-yaxis,
+.apexcharts-plot-area,
+.apexcharts-series,
+.apexcharts-series > path {
+  background: transparent !important;
+}
+
+.apexcharts-xaxistooltip,
+.apexcharts-yaxistooltip {
+  background: var(--color-surface-2) !important;
+  color: var(--color-fg) !important;
+  border-color: var(--color-border) !important;
+}
+
+.apexcharts-xaxistooltip-bottom::before,
+.apexcharts-xaxistooltip-bottom::after {
+  border-bottom-color: var(--color-border) !important;
+}
+
+.apexcharts-toolbar {
+  display: flex !important;
+}
+
+/* Toolbar buttons: usar nuestras variables en lugar de los hex hardcodeados */
+.apexcharts-canvas .apexcharts-menu-icon,
+.apexcharts-canvas .apexcharts-zoom-icon,
+.apexcharts-canvas .apexcharts-zoomin-icon,
+.apexcharts-canvas .apexcharts-zoomout-icon,
+.apexcharts-canvas .apexcharts-pan-icon,
+.apexcharts-canvas .apexcharts-selection-icon,
+.apexcharts-canvas .apexcharts-reset-icon,
+.apexcharts-canvas .apexcharts-toolbar-custom-icon {
+  color: var(--color-fg-muted) !important;
+  background: transparent !important;
+  transition: color 150ms ease, background-color 150ms ease;
+}
+
+.apexcharts-canvas .apexcharts-menu-icon:hover,
+.apexcharts-canvas .apexcharts-zoomin-icon:hover,
+.apexcharts-canvas .apexcharts-zoomout-icon:hover,
+.apexcharts-canvas .apexcharts-pan-icon:not(.apexcharts-selected):hover,
+.apexcharts-canvas .apexcharts-selection-icon:not(.apexcharts-selected):hover,
+.apexcharts-canvas .apexcharts-reset-icon:hover,
+.apexcharts-canvas .apexcharts-toolbar-custom-icon:hover {
+  background: var(--color-surface-3) !important;
+  color: var(--color-fg) !important;
+}
+
+.apexcharts-canvas .apexcharts-pan-icon.apexcharts-selected,
+.apexcharts-canvas .apexcharts-reset-zoom-icon.apexcharts-selected,
+.apexcharts-canvas .apexcharts-selection-icon.apexcharts-selected,
+.apexcharts-canvas .apexcharts-zoom-icon.apexcharts-selected {
+  background: color-mix(in srgb, var(--color-brand) 12%, transparent) !important;
+  color: var(--color-brand) !important;
+}
+
+.apexcharts-canvas .apexcharts-selection-rect {
+  fill: color-mix(in srgb, var(--color-brand) 10%, transparent);
+  stroke: var(--color-brand);
+}
+
+.apexcharts-canvas .apexcharts-menu-icon svg,
+.apexcharts-canvas .apexcharts-zoom-icon svg,
+.apexcharts-canvas .apexcharts-zoomin-icon svg,
+.apexcharts-canvas .apexcharts-zoomout-icon svg,
+.apexcharts-canvas .apexcharts-pan-icon svg,
+.apexcharts-canvas .apexcharts-selection-icon svg,
+.apexcharts-canvas .apexcharts-reset-icon svg,
+.apexcharts-canvas .apexcharts-toolbar-custom-icon svg {
+  stroke: currentColor !important;
+  fill: none !important;
+}
+
+.apexcharts-legend-text {
+  color: var(--color-fg-muted) !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+main > * {
+  animation: fadeIn 200ms ease-out;
+}
