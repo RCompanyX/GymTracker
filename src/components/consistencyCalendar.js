@@ -12,6 +12,10 @@ function dayKey(d) {
   return d.toISOString().slice(0, 10);
 }
 
+function state_lang() {
+  return document.documentElement.lang || 'es';
+}
+
 function getWeeks(measurements) {
   if (measurements.length === 0) return { weeks: [], monthLabels: [] };
   const dates = measurements.map(m => new Date(m.date));
@@ -36,6 +40,7 @@ function getWeeks(measurements) {
 
   const weeks = [];
   const monthLabels = new Array(totalWeeks).fill(null);
+  const monthIndices = new Array(totalWeeks).fill(null);
 
   for (let w = 0; w < totalWeeks; w++) {
     const week = [];
@@ -49,7 +54,8 @@ function getWeeks(measurements) {
 
       if (d === 0 && inRange) {
         const month = cellDate.getMonth();
-        const prev = w > 0 ? monthLabels[w - 1] : -1;
+        monthIndices[w] = month;
+        const prev = w > 0 ? monthIndices[w - 1] : -1;
         if (month !== prev) {
           monthLabels[w] = cellDate.toLocaleString(state_lang(), { month: 'short' });
         }
@@ -61,10 +67,6 @@ function getWeeks(measurements) {
   return { weeks, monthLabels };
 }
 
-function state_lang() {
-  return document.documentElement.lang || 'es';
-}
-
 export function ConsistencyCalendar({ measurements }) {
   if (measurements.length === 0) return null;
 
@@ -72,23 +74,23 @@ export function ConsistencyCalendar({ measurements }) {
   const totalDays = weeks.length * 7;
   const measuredDays = weeks.flat().filter(c => c.m).length;
   const consistency = totalDays > 0 ? (measuredDays / totalDays) * 100 : 0;
-  const dayLabels = state_lang() === 'es'
+  const lang = state_lang();
+  const dayLabels = lang === 'es'
     ? ['L', 'M', 'X', 'J', 'V', 'S', 'D']
     : ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
-  const grid = el('div', { class: 'flex gap-1' });
+  const grid = el('div', { class: 'flex gap-2' });
 
-  const dayLabelsCol = el('div', { class: 'flex flex-col gap-0.5 text-[10px] text-[var(--color-fg-muted)] pr-1 justify-start' });
+  const dayLabelsCol = el('div', { class: 'flex flex-col gap-0.5 text-[10px] text-[var(--color-fg-muted)] pr-1 justify-start shrink-0' });
   for (let d = 0; d < 7; d++) {
     const isWeekend = d >= 5;
-    const lbl = el('div', {
-      class: `h-3 leading-3 ${isWeekend ? 'opacity-50' : ''}`
-    }, dayLabels[d]);
-    dayLabelsCol.appendChild(lbl);
+    dayLabelsCol.appendChild(el('div', {
+      class: `w-3 h-3 leading-3 flex items-center justify-center ${isWeekend ? 'opacity-50' : ''}`
+    }, dayLabels[d]));
   }
   grid.appendChild(dayLabelsCol);
 
-  const weeksContainer = el('div', { class: 'flex gap-0.5 overflow-x-auto scrollbar-thin' });
+  const weeksContainer = el('div', { class: 'flex-1 min-w-0' });
 
   const monthRow = el('div', { class: 'flex gap-0.5 h-3 text-[10px] text-[var(--color-fg-muted)] mb-0.5' });
   for (const lbl of monthLabels) {
@@ -117,17 +119,17 @@ export function ConsistencyCalendar({ measurements }) {
   weeksContainer.appendChild(weeksRow);
   grid.appendChild(weeksContainer);
 
-  const legend = el('div', { class: 'flex items-center gap-2 mt-3 text-xs text-[var(--color-fg-muted)]' }, [
-    el('span', {}, 'Menos'),
+  const legend = el('div', { class: 'flex items-center gap-2 mt-3 text-xs text-[var(--color-fg-muted]' }, [
+    el('span', {}, lang === 'es' ? 'Menos' : 'Less'),
     el('div', { class: 'flex gap-1' }, [
       el('div', { class: 'w-3 h-3 rounded-sm bg-[var(--color-surface-3)]' }),
       el('div', { class: 'w-3 h-3 rounded-sm bg-[var(--color-brand)]/40' }),
       el('div', { class: 'w-3 h-3 rounded-sm bg-[var(--color-brand)]/70' }),
       el('div', { class: 'w-3 h-3 rounded-sm bg-[var(--color-brand)]' })
     ]),
-    el('span', {}, 'Más'),
+    el('span', {}, lang === 'es' ? 'Más' : 'More'),
     el('div', { class: 'flex-1' }),
-    el('span', { class: 'font-mono' }, `${measuredDays}/${totalDays} días · ${consistency.toFixed(0)}%`)
+    el('span', { class: 'font-mono' }, `${measuredDays}/${totalDays} ${lang === 'es' ? 'días' : 'days'} · ${consistency.toFixed(0)}%`)
   ]);
 
   return el('div', {
@@ -135,7 +137,7 @@ export function ConsistencyCalendar({ measurements }) {
   }, [
     el('div', { class: 'flex items-center gap-2 mb-3' }, [
       icon('calendar', { size: 16, class: 'text-[var(--color-brand)]' }),
-      el('h3', { class: 'text-sm font-semibold' }, state_lang() === 'es' ? 'Consistencia' : 'Consistency')
+      el('h3', { class: 'text-sm font-semibold' }, lang === 'es' ? 'Consistencia' : 'Consistency')
     ]),
     grid,
     legend

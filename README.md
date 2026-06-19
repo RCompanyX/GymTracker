@@ -1,26 +1,23 @@
 # GymTracker
 
-Visualizador web personal de pesajes Tanita. Sin servidor, sin base de datos: tú gestionas el CSV, la app se encarga de los gráficos y las estadísticas.
+Visualizador web personal de pesajes de la báscula **Tanita BC-401**. Sin servidor, sin base de datos: tú arrastras el CSV, la app se encarga de los gráficos y las estadísticas.
 
 ## Características
 
-- **Importación directa** del CSV exportado por la app Tanita.
-- **File System Access API**: la app recuerda la carpeta y carga el CSV más reciente automáticamente (Chrome / Edge / Brave / Opera).
-- **Fallback a file picker** en Firefox / Safari / móvil.
+- **Drag & drop del CSV** de la Tanita BC-401 — selecciónalo cada vez, no se guarda nada.
+- **Validación de firma BC-401**: detecta CSVs que no son de este modelo.
 - **Dashboard** con KPIs (peso actual, Δ desde inicio, Δ 7d, IMC, grasa, masa muscular) — cada uno con **sparkline**.
 - **Gráficos** de cada métrica con **ApexCharts**: línea + área degradada, marcadores de max/min, línea de promedio, zoom, brush (selección arrastrando), tooltips ricos.
 - **Tooltip rico**: al pasar sobre cualquier chart se muestran **todas las métricas del mismo día** en una mini-tabla.
 - **Calendario de consistencia** estilo GitHub: visualiza qué días te pesaste.
 - **Selector de rango** (Todo / 1m / 3m / 6m / 1y) y rango custom vía brush.
-- **Estadísticas** por métrica (min, max, media, último, Δ, Δ%, slope semanal).
+- **Estadísticas** por métrica (min, max, media, último, último peso, Δ, Δ%, slope semanal).
 - **Tabla cruda** con ordenación, paginación y export a CSV.
 - **Toggle de métricas** visibles (persiste en `localStorage`).
 - **Modo claro / oscuro / sistema** sincronizado entre UI, gráficos y sparklines.
 - **Bilingüe** ES / EN con switcher.
-- **Iconos** Lucide en toda la UI (header, KPIs, botones, tabla, empty states).
-- **Empty states** ilustrados, **transiciones suaves** en hover/tema.
-- **Multi-dispositivo** colocando la carpeta de CSVs en OneDrive / Google Drive / Dropbox / iCloud.
-- **Sin backend**, sin tracking, sin licencias de pago.
+- **Iconos** Lucide en toda la UI.
+- **Sin backend**, sin tracking, sin licencias de pago. Sin persistencia de datos de pesaje — cada vez que entras, arrastras tu CSV.
 
 ## Stack
 

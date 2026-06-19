@@ -15,6 +15,8 @@ const ALL_METRICS = [
   { field: 'physiqueRating', labelKey: 'metrics.physiqueRating' }
 ];
 
+export { ALL_METRICS };
+
 let isOpen = false;
 let panelEl = null;
 let btnEl = null;
@@ -34,19 +36,41 @@ function onDocClick(e) {
   if (panelEl && !panelEl.contains(e.target) && btnEl && !btnEl.contains(e.target)) close();
 }
 
-if (typeof document !== 'undefined') {
+if (typeof document !== 'undefined' && !onDocClick._installed) {
   document.addEventListener('click', onDocClick);
+  onDocClick._installed = true;
 }
 
 export function MetricsToggle() {
   btnEl = el('button', {
-    class: 'inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] text-sm hover:bg-[var(--color-surface-2)] transition-colors',
+    class: 'w-full h-full min-h-[44px] inline-flex items-center justify-between gap-2 px-3 py-2.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] text-sm hover:bg-[var(--color-surface-2)] transition-colors',
     onclick: (e) => { e.stopPropagation(); toggle(); }
-  }, [icon('sliders-horizontal', { size: 14 }), t('actions.metrics')]);
+  }, [
+    el('span', { class: 'inline-flex items-center gap-2 min-w-0' }, [
+      icon('sliders-horizontal', { size: 14, class: 'shrink-0 text-[var(--color-fg-muted)]' }),
+      el('span', { class: 'truncate' }, t('actions.metrics'))
+    ]),
+    icon(isOpen ? 'chevron-up' : 'chevron-down', { size: 14, class: 'shrink-0 text-[var(--color-fg-muted)]' })
+  ]);
 
   panelEl = el('div', {
-    class: 'absolute right-0 top-full mt-2 z-10 min-w-56 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] shadow-lg p-2 hidden'
+    class: [
+      'absolute top-full mt-2 z-20 right-0 sm:left-auto sm:right-0 sm:w-72 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] shadow-lg p-2',
+      isOpen ? '' : 'hidden'
+    ].join(' '),
+    onclick: e => e.stopPropagation()
   });
+
+  const panelHeader = el('div', { class: 'flex items-center justify-between mb-1 pb-2 border-b border-[var(--color-border)]' }, [
+    el('span', { class: 'text-sm font-semibold' }, t('actions.metrics')),
+    el('button', {
+      class: 'w-7 h-7 inline-flex items-center justify-center rounded-md text-[var(--color-fg-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-fg)] transition-colors',
+      'aria-label': t('actions.close'),
+      title: t('actions.close'),
+      onclick: (e) => { e.stopPropagation(); close(); }
+    }, icon('x', { size: 14 }))
+  ]);
+  panelEl.appendChild(panelHeader);
 
   for (const m of ALL_METRICS) {
     const checked = state.visibleMetrics.includes(m.field);
@@ -55,7 +79,9 @@ export function MetricsToggle() {
         type: 'checkbox',
         checked,
         class: 'accent-[var(--color-brand)]',
+        onclick: (e) => e.stopPropagation(),
         onchange: (e) => {
+          e.stopPropagation();
           const next = new Set(state.visibleMetrics);
           if (e.target.checked) next.add(m.field);
           else next.delete(m.field);
@@ -70,13 +96,19 @@ export function MetricsToggle() {
   panelEl.appendChild(el('div', { class: 'border-t border-[var(--color-border)] mt-2 pt-2 flex justify-between text-xs' }, [
     el('button', {
       class: 'px-2 py-1 rounded hover:bg-[var(--color-surface-2)] text-[var(--color-fg-muted)] inline-flex items-center gap-1',
-      onclick: () => setVisibleMetrics(ALL_METRICS.map(m => m.field))
+      onclick: (e) => {
+        e.stopPropagation();
+        setVisibleMetrics(ALL_METRICS.map(m => m.field));
+      }
     }, [icon('check', { size: 12 }), t('actions.selectAll')]),
     el('button', {
       class: 'px-2 py-1 rounded hover:bg-[var(--color-surface-2)] text-[var(--color-fg-muted)] inline-flex items-center gap-1',
-      onclick: () => setVisibleMetrics([])
+      onclick: (e) => {
+        e.stopPropagation();
+        setVisibleMetrics([]);
+      }
     }, [icon('x', { size: 12 }), t('actions.selectNone')])
   ]));
 
-  return el('div', { class: 'relative' }, [btnEl, panelEl]);
+  return el('div', { class: 'relative w-full h-full' }, [btnEl, panelEl]);
 }

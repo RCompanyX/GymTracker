@@ -33,6 +33,11 @@ export const COLUMN_MAP = {
 
 export const REQUIRED_COLUMNS = ['Date', 'Weight (kg)'];
 
+const BC401_SIGNATURE = [
+  'BMI', 'Body Fat (%)', 'Muscle Mass (kg)', 'Bone Mass (kg)',
+  'BMR (kcal)', 'Metab Age', 'Body Water (%)'
+];
+
 function toNumberOrNull(v) {
   if (v === null || v === undefined) return null;
   const s = String(v).trim();
@@ -57,6 +62,10 @@ export function validateHeaders(headers) {
   const missing = REQUIRED_COLUMNS.filter(r => !headers.includes(r));
   if (missing.length) {
     throw new Error(`Faltan columnas requeridas: ${missing.join(', ')}`);
+  }
+  const matched = BC401_SIGNATURE.filter(c => headers.includes(c)).length;
+  if (matched < 4) {
+    throw new Error('Este CSV no parece provenir de una Tanita BC-401 (faltan columnas típicas como BMI, Body Fat, Muscle Mass)');
   }
 }
 

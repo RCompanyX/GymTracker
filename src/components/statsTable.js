@@ -12,12 +12,17 @@ export function StatsTable({ fields, measurements }) {
     return { f, s, slope, hasData: s.count > 0 };
   });
 
+  const lastWeight = measurements.length > 0
+    ? measurements[measurements.length - 1].weight
+    : null;
+
   const table = el('table', { class: 'w-full text-sm' });
   const thead = el('thead', { class: 'bg-[var(--color-surface-2)]' });
   const trh = el('tr');
   for (const c of [
     t('table.metric'), t('table.min'), t('table.max'), t('table.avg'),
-    t('table.last'), t('table.delta'), t('table.deltaPct'), t('table.trend')
+    t('table.last'), t('table.lastWeight'),
+    t('table.delta'), t('table.deltaPct'), t('table.trend')
   ]) trh.appendChild(el('th', { class: 'text-left px-3 py-2 font-medium text-[var(--color-fg-muted)] whitespace-nowrap' }, c));
   thead.appendChild(trh);
 
@@ -38,6 +43,7 @@ export function StatsTable({ fields, measurements }) {
       el('td', { class: cls }, fmtNumber(r.s.max, 1) + (r.f.unit ? ' ' + r.f.unit : '')),
       el('td', { class: cls }, fmtNumber(r.s.avg, 1) + (r.f.unit ? ' ' + r.f.unit : '')),
       el('td', { class: cls }, fmtNumber(r.s.last, 1) + (r.f.unit ? ' ' + r.f.unit : '')),
+      el('td', { class: cls, style: { color: 'var(--color-fg-muted)' } }, lastWeight != null ? fmtNumber(lastWeight, 1) + ' kg' : '—'),
       el('td', { class: cls, style: { color: deltaColor } }, fmtSigned(r.s.delta, 1) + (r.f.unit ? ' ' + r.f.unit : '')),
       el('td', { class: cls, style: { color: deltaColor } }, fmtPercent(r.s.deltaPct, 1)),
       el('td', { class: cls, style: { color: trendColor } }, r.slope == null ? '—' : fmtSigned(r.slope, 2))
@@ -46,5 +52,7 @@ export function StatsTable({ fields, measurements }) {
   }
   table.append(thead, tbody);
 
-  return el('div', { class: 'rounded-xl border border-[var(--color-border)] overflow-hidden' }, table);
+  return el('div', { class: 'rounded-xl border border-[var(--color-border)] overflow-hidden' }, [
+    el('div', { class: 'overflow-x-auto scrollbar-thin' }, table)
+  ]);
 }

@@ -1,27 +1,26 @@
 export const es = {
-  app: { title: 'GymTracker' },
+  app: { title: 'GymTracker', subtitle: 'Báscula Tanita BC-401' },
   actions: {
     openCsv: 'Abrir CSV',
-    pickFolder: 'Elegir carpeta',
-    changeFolder: 'Cambiar carpeta',
-    clearFolder: 'Olvidar carpeta',
     refresh: 'Refrescar',
     exportJson: 'Exportar JSON',
-    metrics: 'Métricas ▾',
+    metrics: 'Métricas',
     selectAll: 'Todas',
-    selectNone: 'Ninguna'
+    selectNone: 'Ninguna',
+    menu: 'Menú',
+    theme: 'Tema',
+    language: 'Idioma',
+    close: 'Cerrar'
   },
   empty: {
-    noData: 'Sin datos. Abre un CSV para empezar.',
-    noCsvInFolder: 'No se han encontrado CSVs en la carpeta seleccionada.',
-    noMeasurementsInRange: 'No hay pesajes en el rango seleccionado.'
-  },
-  folder: {
-    prompt: 'Selecciona la carpeta donde guardas los CSV de Tanita. La app recordará la carpeta y leerá automáticamente el CSV más reciente.',
-    unsupported: 'Tu navegador no soporta File System Access API. Puedes seguir usando la app, pero tendrás que elegir el CSV manualmente cada vez.',
-    pickManually: 'Elegir CSV manualmente',
-    selected: 'Carpeta activa',
-    permissionDenied: 'Permiso denegado para acceder a la carpeta.'
+    welcomeSubtitle: 'Visualiza las mediciones de tu báscula Tanita BC-401',
+    dropHere: 'Arrastra tu CSV aquí',
+    dropOrClick: 'o haz click para elegir un archivo',
+    csvFormat: 'Compatible con el CSV exportado de la Tanita BC-401',
+    noData: 'Sin datos. Arrastra un CSV para empezar.',
+    noMeasurementsInRange: 'No hay pesajes en el rango seleccionado.',
+    noMetricsTitle: 'Sin métricas visibles',
+    noMetricsHint: 'Has ocultado todas las métricas. Activa al menos una para ver los gráficos.'
   },
   kpi: {
     currentWeight: 'Peso actual',
@@ -29,7 +28,10 @@ export const es = {
     delta7d: 'Δ 7 días',
     bmi: 'IMC',
     bodyFat: 'Grasa corporal',
-    muscleMass: 'Masa muscular'
+    muscleMass: 'Masa muscular',
+    system: 'Auto',
+    light: 'Claro',
+    dark: 'Oscuro'
   },
   range: {
     label: 'Rango',
@@ -47,6 +49,7 @@ export const es = {
     max: 'Máx',
     avg: 'Media',
     last: 'Último',
+    lastWeight: 'Último peso',
     delta: 'Δ',
     deltaPct: 'Δ %',
     trend: 'Tendencia/sem',
@@ -74,29 +77,28 @@ export const es = {
 };
 
 export const en = {
-  app: { title: 'GymTracker' },
+  app: { title: 'GymTracker', subtitle: 'Tanita BC-401 scale' },
   actions: {
     openCsv: 'Open CSV',
-    pickFolder: 'Pick folder',
-    changeFolder: 'Change folder',
-    clearFolder: 'Forget folder',
     refresh: 'Refresh',
     exportJson: 'Export JSON',
-    metrics: 'Metrics ▾',
+    metrics: 'Metrics',
     selectAll: 'All',
-    selectNone: 'None'
+    selectNone: 'None',
+    menu: 'Menu',
+    theme: 'Theme',
+    language: 'Language',
+    close: 'Close'
   },
   empty: {
-    noData: 'No data. Open a CSV to get started.',
-    noCsvInFolder: 'No CSVs found in the selected folder.',
-    noMeasurementsInRange: 'No weigh-ins in the selected range.'
-  },
-  folder: {
-    prompt: 'Pick the folder where you keep your Tanita CSVs. The app will remember the folder and auto-read the newest CSV.',
-    unsupported: 'Your browser does not support the File System Access API. You can still use the app, but you will need to pick the CSV manually each time.',
-    pickManually: 'Pick CSV manually',
-    selected: 'Active folder',
-    permissionDenied: 'Permission denied for the folder.'
+    welcomeSubtitle: 'Visualize the measurements from your Tanita BC-401 scale',
+    dropHere: 'Drop your CSV here',
+    dropOrClick: 'or click to choose a file',
+    csvFormat: 'Compatible with CSV exported from Tanita BC-401',
+    noData: 'No data. Drop a CSV to get started.',
+    noMeasurementsInRange: 'No weigh-ins in the selected range.',
+    noMetricsTitle: 'No metrics visible',
+    noMetricsHint: 'You have hidden all metrics. Enable at least one to see the charts.'
   },
   kpi: {
     currentWeight: 'Current weight',
@@ -104,7 +106,10 @@ export const en = {
     delta7d: 'Δ 7 days',
     bmi: 'BMI',
     bodyFat: 'Body fat',
-    muscleMass: 'Muscle mass'
+    muscleMass: 'Muscle mass',
+    system: 'Auto',
+    light: 'Light',
+    dark: 'Dark'
   },
   range: {
     label: 'Range',
@@ -122,6 +127,7 @@ export const en = {
     max: 'Max',
     avg: 'Avg',
     last: 'Last',
+    lastWeight: 'Last weight',
     delta: 'Δ',
     deltaPct: 'Δ %',
     trend: 'Trend/week',

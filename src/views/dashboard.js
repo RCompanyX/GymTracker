@@ -22,6 +22,11 @@ const FIELDS = [
   { field: 'physiqueRating', label: () => t('metrics.physiqueRating'), unit: '' }
 ];
 
+function safeAppend(parent, child) {
+  if (child == null || child === false) return;
+  parent.appendChild(child);
+}
+
 export function Dashboard() {
   const visible = FIELDS.filter(f => state.visibleMetrics.includes(f.field));
   const data = filteredMeasurements();
@@ -32,7 +37,7 @@ export function Dashboard() {
   if (fullData.length === 0) return wrap;
 
   if (data.length === 0) {
-    wrap.appendChild(EmptyState({
+    safeAppend(wrap, EmptyState({
       iconName: 'calendar',
       title: t('empty.noMeasurementsInRange'),
       hint: t('range.label') + ': ' + t('range.all')
@@ -40,25 +45,25 @@ export function Dashboard() {
     return wrap;
   }
 
-  const controls = el('div', { class: 'flex items-center justify-between flex-wrap gap-3' }, [
+  const controls = el('div', { class: 'grid grid-cols-2 sm:flex sm:items-center sm:justify-between gap-2 sm:gap-3' }, [
     RangePicker(),
     MetricsToggle()
   ]);
-  wrap.appendChild(controls);
+  safeAppend(wrap, controls);
 
-  wrap.appendChild(KpiGrid(data));
-  wrap.appendChild(ConsistencyCalendar({ measurements: fullData }));
-  wrap.appendChild(MetricGrid({
+  safeAppend(wrap, KpiGrid(data));
+  safeAppend(wrap, ConsistencyCalendar({ measurements: fullData }));
+  safeAppend(wrap, MetricGrid({
     fields: visible.map(f => ({ field: f.field, label: f.label(), unit: f.unit })),
     measurements: data
   }));
-  wrap.appendChild(el('h2', { class: 'text-lg font-semibold mt-4' }, t('table.metric') + 's'));
-  wrap.appendChild(StatsTable({
+  safeAppend(wrap, el('h2', { class: 'text-lg font-semibold mt-4' }, t('table.metric') + 's'));
+  safeAppend(wrap, StatsTable({
     fields: visible.map(f => ({ field: f.field, label: f.label(), unit: f.unit })),
     measurements: data
   }));
-  wrap.appendChild(el('h2', { class: 'text-lg font-semibold mt-8' }, t('table.date') + 's'));
-  wrap.appendChild(DataTable(data));
+  safeAppend(wrap, el('h2', { class: 'text-lg font-semibold mt-8' }, t('table.date') + 's'));
+  safeAppend(wrap, DataTable(data));
 
   return wrap;
 }

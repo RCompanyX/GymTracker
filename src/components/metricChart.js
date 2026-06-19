@@ -2,7 +2,9 @@ import { el } from '../lib/dom.js';
 import { mountLineChart } from '../lib/charts.js';
 import { asPoints, stats } from '../lib/stats.js';
 import { fmtNumber, fmtSigned, fmtPercent } from '../lib/format.js';
-import { state } from '../lib/state.js';
+import { state, setVisibleMetrics, t } from '../lib/state.js';
+import { icon } from '../lib/icons.js';
+import { ALL_METRICS } from './metricsToggle.js';
 
 export function MetricChart({ field, label, unit, measurements }) {
   const container = el('div', {
@@ -56,7 +58,21 @@ export function MetricChart({ field, label, unit, measurements }) {
 }
 
 export function MetricGrid({ fields, measurements }) {
-  if (fields.length === 0) return null;
+  if (fields.length === 0) {
+    return el('div', {
+      class: 'rounded-xl border border-dashed border-[var(--color-border)] bg-[var(--color-surface-2)] p-8 text-center'
+    }, [
+      el('div', { class: 'inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--color-surface-3)] text-[var(--color-fg-muted)] mb-3' },
+        icon('sliders-horizontal', { size: 24, 'stroke-width': 1.5 })),
+      el('h3', { class: 'text-base font-semibold mb-1' }, t('empty.noMetricsTitle') || 'Sin métricas visibles'),
+      el('p', { class: 'text-sm text-[var(--color-fg-muted)] mb-4' },
+        t('empty.noMetricsHint') || 'Has ocultado todas las métricas. Vuelve a activar al menos una para ver los gráficos.'),
+      el('button', {
+        class: 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[var(--color-brand)] text-[var(--color-brand-fg)] text-sm font-medium hover:opacity-90 transition-opacity',
+        onclick: () => setVisibleMetrics(ALL_METRICS.map(m => m.field))
+      }, [icon('check', { size: 14 }), t('actions.selectAll')])
+    ]);
+  }
   const grid = el('div', { class: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' });
   for (const f of fields) {
     grid.appendChild(MetricChart({
