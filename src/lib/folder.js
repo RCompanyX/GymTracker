@@ -1,9 +1,3 @@
-export function isFsaSupported() {
-  return typeof window !== 'undefined'
-    && 'showDirectoryPicker' in window
-    && 'queryPermission' in window;
-}
-
 export function pickCsvFile() {
   return new Promise((resolve, reject) => {
     const input = document.createElement('input');

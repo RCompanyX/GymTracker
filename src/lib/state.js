@@ -3,7 +3,6 @@ import { DICTS, t as translate } from '../i18n/dict.js';
 
 export const state = {
   measurements: [],
-  folderName: null,
   fileName: null,
   theme: getPref('theme', 'system'),
   lang: getPref('lang', 'es'),
@@ -54,7 +53,6 @@ if (typeof window !== 'undefined') {
 
 export function setMeasurements(measurements, meta = {}) {
   state.measurements = measurements;
-  state.folderName = meta.folderName ?? state.folderName;
   state.fileName = meta.fileName ?? state.fileName;
   state.error = null;
   notify();
