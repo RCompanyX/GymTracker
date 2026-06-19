@@ -73,6 +73,23 @@ export const es = {
     kcal: 'kcal',
     years: 'años',
     rating: ''
+  },
+  quickWins: {
+    startedTitle: '¡Has empezado!',
+    startedMsg: 'Registra tu próxima medición para empezar a ver tendencias.',
+    recordTitle: '¡Nuevo mínimo histórico!',
+    recordMsg: 'Has alcanzado {weight} kg, tu peso más bajo registrado.',
+    milestoneLossTitle: '¡Hito alcanzado!',
+    milestoneLossMsg: 'Llevas {kg} kg perdidos desde que empezaste.',
+    milestoneGainTitle: '¡Hito alcanzado!',
+    milestoneGainMsg: 'Llevas {kg} kg ganados desde que empezaste.',
+    lossTitle: '¡Buen avance!',
+    lossMsg: 'Has bajado {kg} kg desde la última medición.',
+    gainTitle: 'Vas al alza',
+    gainMsg: 'Has subido {kg} kg desde la última medición.',
+    streakTitle: 'Racha activa',
+    streakMsg: '{count} mediciones en los últimos {days} días. ¡Constante!',
+    dismiss: 'Descartar'
   }
 };
 
@@ -151,6 +168,23 @@ export const en = {
     kcal: 'kcal',
     years: 'yr',
     rating: ''
+  },
+  quickWins: {
+    startedTitle: "You've started!",
+    startedMsg: 'Log your next weigh-in to start seeing trends.',
+    recordTitle: 'New all-time low!',
+    recordMsg: "You've hit {weight} kg, your lowest recorded weight.",
+    milestoneLossTitle: 'Milestone reached!',
+    milestoneLossMsg: "That's {kg} kg lost since you started.",
+    milestoneGainTitle: 'Milestone reached!',
+    milestoneGainMsg: "That's {kg} kg gained since you started.",
+    lossTitle: 'Nice progress!',
+    lossMsg: "You're down {kg} kg since the last weigh-in.",
+    gainTitle: 'Trending up',
+    gainMsg: "You're up {kg} kg since the last weigh-in.",
+    streakTitle: 'Active streak',
+    streakMsg: '{count} weigh-ins in the last {days} days. Keep it up!',
+    dismiss: 'Dismiss'
   }
 };
 

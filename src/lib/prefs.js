@@ -20,3 +20,19 @@ export function removePref(key) {
     localStorage.removeItem(PREFIX + key);
   } catch {}
 }
+
+export function getPrefSet(key) {
+  const v = getPref(key, []);
+  return Array.isArray(v) ? new Set(v) : new Set();
+}
+
+export function isWinDismissed(id) {
+  return getPrefSet('dismissedWins').has(id);
+}
+
+export function dismissWin(id) {
+  const set = getPrefSet('dismissedWins');
+  if (set.has(id)) return;
+  set.add(id);
+  setPref('dismissedWins', Array.from(set));
+}

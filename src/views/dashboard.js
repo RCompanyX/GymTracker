@@ -7,6 +7,7 @@ import { StatsTable } from '../components/statsTable.js';
 import { DataTable } from './dataTable.js';
 import { ConsistencyCalendar } from '../components/consistencyCalendar.js';
 import { EmptyState } from '../components/emptyState.js';
+import { QuickWins } from '../components/quickWins.js';
 import { state, filteredMeasurements, t } from '../lib/state.js';
 
 const FIELDS = [
@@ -50,6 +51,8 @@ export function Dashboard() {
     MetricsToggle()
   ]);
   safeAppend(wrap, controls);
+
+  safeAppend(wrap, QuickWins({ measurements: fullData }));
 
   safeAppend(wrap, KpiGrid(data));
   safeAppend(wrap, ConsistencyCalendar({ measurements: fullData }));
