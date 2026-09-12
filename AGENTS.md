@@ -17,7 +17,7 @@ There is **no** lint, typecheck, formatter, or test script defined in `package.j
 node scripts/test-csv.mjs <path-to.csv>     # parses & summarises the supplied CSV
 node scripts/test-stats.mjs <path-to.csv>   # reports statistics for the supplied CSV
 node scripts/test-calendar.mjs              # pure logic test, no file I/O
-node scripts/test-tokens.mjs                # greps src/style.css for design-token CSS vars
+node scripts/test-tokens.mjs                # prints selected CSS design tokens for inspection
 ```
 
 ## Architecture
@@ -34,7 +34,7 @@ Key modules:
 - `src/i18n/dict.js` — `es` and `en` dictionaries, accessed via `t(key)` from `state.js`.
 
 Directory map:
-- `src/lib/` — domain logic (no DOM)
+- `src/lib/` — domain logic and browser utilities; `csv.js`, `stats.js`, and `quickWins.js` are DOM-independent, while chart, theme, and file-picker helpers require a browser
 - `src/components/` — UI building blocks
 - `src/views/` — page-level compositions
 - `src/i18n/` — translation dictionaries

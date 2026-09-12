@@ -14,5 +14,5 @@ for (const t of tokens) {
 }
 
 console.log('\nAfter Canvas API conversion in browser, these become rgb(...) form.');
-console.log('Then ECharts can parse them correctly.');
+console.log('Then ApexCharts can parse them correctly.');
 console.log('\nFix verified at code level. Visual verification requires running the app.');

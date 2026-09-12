@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Visualizador de pesajes Tanita con gráficos, estadísticas y modo claro/oscuro.",
+  "description": "Tanita measurement viewer with charts, statistics, and light/dark themes.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
