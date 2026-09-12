@@ -7,19 +7,21 @@ import { mountSparkline } from '../lib/charts.js';
 
 const REGISTRY = new WeakMap();
 
-export function KpiCard({ label, value, sub, trend, sparkline, sparklineColor, trendInverse = false }) {
+export function KpiCard({ label, value, sub, trend, sparkline, sparklineColor, featured = false }) {
   const container = el('div', {
-    class: 'rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 flex flex-col gap-2 transition-colors hover:border-[var(--color-brand)]/40'
+    class: [
+      'rounded-xl border p-4 flex flex-col gap-2 transition-colors hover:border-[var(--color-brand)]/40',
+      featured
+        ? 'border-[var(--color-brand)]/35 bg-[var(--color-brand)]/5 shadow-sm shadow-[var(--color-brand)]/5'
+        : 'border-[var(--color-border)] bg-[var(--color-surface-2)]'
+    ].join(' ')
   });
 
   let trendEl = null;
   if (trend != null && Number.isFinite(trend)) {
     const positive = trend > 0;
     const negative = trend < 0;
-    const goodPositive = !trendInverse;
-    const isGood = positive ? goodPositive : !goodPositive;
-    const color = trend === 0 ? 'var(--color-fg-muted)'
-      : isGood ? 'var(--color-success)' : 'var(--color-danger)';
+    const color = trend === 0 ? 'var(--color-fg-muted)' : 'var(--color-brand)';
     const TrendIcon = positive ? 'trending-up' : negative ? 'trending-down' : 'minus';
     trendEl = el('div', { class: 'text-xs flex items-center gap-1', style: { color } }, [
       icon(TrendIcon, { size: 12 }),
@@ -89,17 +91,16 @@ export function KpiGrid(measurements) {
     KpiCard({
       label: t('kpi.currentWeight'),
       value: fmtNumber(last.weight, 1) + ' kg',
-      sub: last.date ? new Date(last.date).toISOString().slice(0, 10) : null,
+      sub: `${t('kpi.latestMeasurement')} · ${last.date ? new Date(last.date).toISOString().slice(0, 10) : ''}`,
       trend: d7,
       sparkline: weightPoints,
-      trendInverse: false
+      featured: true
     }),
     KpiCard({
       label: t('kpi.deltaFromStart'),
       value: fmtSigned(dStart, 1, ' kg'),
       sub: dStartPct != null ? fmtPercent(dStartPct, 1) : null,
       sparkline: weightPoints.map(p => ({ x: p.x, y: last.weight != null ? p.y - first.weight : null })),
-      trendInverse: false
     }),
     KpiCard({
       label: t('kpi.bmi'),

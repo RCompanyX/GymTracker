@@ -8,7 +8,10 @@ import { ALL_METRICS } from './metricsToggle.js';
 
 export function MetricChart({ field, label, unit, measurements }) {
   const container = el('div', {
-    class: 'rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 transition-colors hover:border-[var(--color-brand)]/40'
+    class: [
+      'rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 transition-colors hover:border-[var(--color-brand)]/40',
+      field === 'weight' ? 'sm:col-span-2 xl:col-span-2' : ''
+    ].join(' ')
   });
 
   const points = asPoints(measurements, field);
@@ -30,7 +33,7 @@ export function MetricChart({ field, label, unit, measurements }) {
       el('div', { class: 'text-lg font-mono' }, fmtNumber(s.last, 1) + (unit ? ' ' + unit : '')),
       s.delta != null ? el('div', {
         class: 'text-xs',
-        style: { color: s.delta === 0 ? 'var(--color-fg-muted)' : s.delta > 0 ? 'var(--color-success)' : 'var(--color-danger)' }
+        style: { color: s.delta === 0 ? 'var(--color-fg-muted)' : 'var(--color-brand)' }
       }, fmtSigned(s.delta, 1) + (s.deltaPct != null ? ' (' + fmtPercent(s.deltaPct, 1) + ')' : '')) : null
     ])
   ]);

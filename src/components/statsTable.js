@@ -31,12 +31,8 @@ export function StatsTable({ fields, measurements }) {
     if (!r.hasData) continue;
     const tr = el('tr', { class: 'border-t border-[var(--color-border)] transition-colors hover:bg-[var(--color-surface-2)]' });
     const cls = 'px-3 py-2 font-mono whitespace-nowrap';
-    const deltaColor = r.s.delta == null ? null
-      : r.s.delta === 0 ? 'var(--color-fg-muted)'
-      : r.s.delta > 0 ? 'var(--color-success)' : 'var(--color-danger)';
-    const trendColor = r.slope == null ? null
-      : r.slope === 0 ? 'var(--color-fg-muted)'
-      : r.slope > 0 ? 'var(--color-success)' : 'var(--color-danger)';
+    const deltaColor = r.s.delta == null || r.s.delta === 0 ? 'var(--color-fg-muted)' : 'var(--color-brand)';
+    const trendColor = r.slope == null || r.slope === 0 ? 'var(--color-fg-muted)' : 'var(--color-brand)';
     tr.append(
       el('td', { class: cls + ' font-sans' }, r.f.label),
       el('td', { class: cls }, fmtNumber(r.s.min, 1) + (r.f.unit ? ' ' + r.f.unit : '')),

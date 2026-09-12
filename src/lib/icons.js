@@ -23,7 +23,11 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  Check
+  Check,
+  Activity,
+  ChartNoAxesCombined,
+  TableProperties,
+  Rows3
 } from 'lucide';
 
 const REGISTRY = {
@@ -50,7 +54,11 @@ const REGISTRY = {
   'chevron-down': ChevronDown,
   'chevron-left': ChevronLeft,
   'chevron-right': ChevronRight,
-  check: Check
+  check: Check,
+  activity: Activity,
+  'chart-no-axes-combined': ChartNoAxesCombined,
+  'table-properties': TableProperties,
+  'rows-3': Rows3
 };
 
 export function icon(name, props = {}) {

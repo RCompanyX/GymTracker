@@ -31,7 +31,8 @@ export const es = {
     muscleMass: 'Masa muscular',
     system: 'Auto',
     light: 'Claro',
-    dark: 'Oscuro'
+    dark: 'Oscuro',
+    latestMeasurement: 'Última medición'
   },
   range: {
     label: 'Rango',
@@ -41,6 +42,22 @@ export const es = {
     months6: '6 meses',
     year1: '1 año',
     custom: 'Personalizado'
+  },
+  summary: {
+    overview: 'Resumen del periodo',
+    sinceStart: 'desde el inicio',
+    weighIns: 'Pesajes',
+    latest: 'Último registro'
+  },
+  sections: {
+    snapshot: 'Vista general',
+    snapshotHint: 'Tu estado actual y frecuencia de registro.',
+    trends: 'Evolución',
+    trendsHint: 'Selecciona un tramo del gráfico para ajustar el rango.',
+    statistics: 'Resumen estadístico',
+    statisticsHint: 'Valores clave de cada métrica visible.',
+    records: 'Registros',
+    recordsHint: 'Consulta, ordena y exporta tus mediciones.'
   },
   table: {
     date: 'Fecha',
@@ -126,7 +143,8 @@ export const en = {
     muscleMass: 'Muscle mass',
     system: 'Auto',
     light: 'Light',
-    dark: 'Dark'
+    dark: 'Dark',
+    latestMeasurement: 'Latest measurement'
   },
   range: {
     label: 'Range',
@@ -136,6 +154,22 @@ export const en = {
     months6: '6 months',
     year1: '1 year',
     custom: 'Custom'
+  },
+  summary: {
+    overview: 'Period overview',
+    sinceStart: 'since the start',
+    weighIns: 'Weigh-ins',
+    latest: 'Latest record'
+  },
+  sections: {
+    snapshot: 'Overview',
+    snapshotHint: 'Your current status and logging frequency.',
+    trends: 'Trends',
+    trendsHint: 'Select a chart range to refine the period.',
+    statistics: 'Statistical summary',
+    statisticsHint: 'Key values for each visible metric.',
+    records: 'Records',
+    recordsHint: 'Review, sort, and export your measurements.'
   },
   table: {
     date: 'Date',

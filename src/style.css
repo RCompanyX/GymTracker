@@ -51,6 +51,11 @@ body {
   transition: background-color 200ms ease, color 200ms ease;
 }
 
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
 .font-mono {
   font-feature-settings: "ss02", "zero", "calt";
 }
@@ -189,12 +194,25 @@ header.sticky.scrolled {
   50% { transform: scale(1.02); }
 }
 
-main > * {
-  animation: fadeIn 200ms ease-out;
-}
-
 .hero-enter {
   animation: heroEnter 350ms ease-out;
+}
+
+.data-table-first-cell {
+  background: var(--color-surface);
+}
+
+tbody tr:hover .data-table-first-cell {
+  background: var(--color-surface-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 .drop-zone {

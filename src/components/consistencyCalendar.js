@@ -71,7 +71,7 @@ export function ConsistencyCalendar({ measurements }) {
   if (measurements.length === 0) return null;
 
   const { weeks, monthLabels } = getWeeks(measurements);
-  const totalDays = weeks.length * 7;
+  const totalDays = weeks.flat().filter(c => c.inRange).length;
   const measuredDays = weeks.flat().filter(c => c.m).length;
   const consistency = totalDays > 0 ? (measuredDays / totalDays) * 100 : 0;
   const lang = state_lang();
@@ -119,15 +119,15 @@ export function ConsistencyCalendar({ measurements }) {
   weeksContainer.appendChild(weeksRow);
   grid.appendChild(weeksContainer);
 
-  const legend = el('div', { class: 'flex items-center gap-2 mt-3 text-xs text-[var(--color-fg-muted]' }, [
-    el('span', {}, lang === 'es' ? 'Menos' : 'Less'),
-    el('div', { class: 'flex gap-1' }, [
+  const legend = el('div', { class: 'flex flex-wrap items-center gap-2 mt-3 text-xs text-[var(--color-fg-muted)]' }, [
+    el('div', { class: 'flex items-center gap-1.5' }, [
       el('div', { class: 'w-3 h-3 rounded-sm bg-[var(--color-surface-3)]' }),
-      el('div', { class: 'w-3 h-3 rounded-sm bg-[var(--color-brand)]/40' }),
-      el('div', { class: 'w-3 h-3 rounded-sm bg-[var(--color-brand)]/70' }),
+      el('span', {}, lang === 'es' ? 'Sin registro' : 'No record')
+    ]),
+    el('div', { class: 'flex gap-1' }, [
       el('div', { class: 'w-3 h-3 rounded-sm bg-[var(--color-brand)]' })
     ]),
-    el('span', {}, lang === 'es' ? 'Más' : 'More'),
+    el('span', {}, lang === 'es' ? 'Con registro' : 'Recorded'),
     el('div', { class: 'flex-1' }),
     el('span', { class: 'font-mono' }, `${measuredDays}/${totalDays} ${lang === 'es' ? 'días' : 'days'} · ${consistency.toFixed(0)}%`)
   ]);

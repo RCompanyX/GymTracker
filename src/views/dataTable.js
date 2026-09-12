@@ -56,10 +56,13 @@ export function DataTable(measurements) {
 
   const thead = el('thead', { class: 'bg-[var(--color-surface-2)]' });
   const trh = el('tr');
-  for (const c of COLUMNS) {
+  for (const [index, c] of COLUMNS.entries()) {
     const isActive = sortField === c.field;
     trh.appendChild(el('th', {
-      class: 'text-left px-3 py-2 font-medium text-[var(--color-fg-muted)] cursor-pointer select-none whitespace-nowrap hover:text-[var(--color-fg)] transition-colors',
+      class: [
+        'sticky top-0 z-[2] px-3 py-2 font-medium text-[var(--color-fg-muted)] cursor-pointer select-none whitespace-nowrap hover:text-[var(--color-fg)] transition-colors bg-[var(--color-surface-2)]',
+        index === 0 ? 'left-0 text-left data-table-first-cell' : 'text-right'
+      ].join(' '),
       onclick: () => {
         if (sortField === c.field) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
         else { sortField = c.field; sortDir = c.field === 'date' ? 'desc' : 'asc'; }
@@ -77,11 +80,18 @@ export function DataTable(measurements) {
   const tbody = el('tbody');
   for (const m of slice) {
     const tr = el('tr', { class: 'border-t border-[var(--color-border)] transition-colors hover:bg-[var(--color-surface-2)]' });
-    for (const c of COLUMNS) tr.appendChild(el('td', { class: 'px-3 py-2 font-mono' }, c.render(m) ?? '—'));
+    for (const [index, c] of COLUMNS.entries()) {
+      tr.appendChild(el('td', {
+        class: [
+          'px-3 py-2 font-mono whitespace-nowrap',
+          index === 0 ? 'sticky left-0 z-[1] text-left data-table-first-cell' : 'text-right'
+        ].join(' ')
+      }, c.render(m) ?? '—'));
+    }
     tbody.appendChild(tr);
   }
 
-  const table = el('table', { class: 'w-full text-sm' }, [thead, tbody]);
+  const table = el('table', { class: 'w-full text-sm bg-[var(--color-surface)]' }, [thead, tbody]);
 
   const pagination = el('div', { class: 'flex items-center justify-between px-3 py-2 border-t border-[var(--color-border)] text-sm' }, [
     el('div', { class: 'text-[var(--color-fg-muted)]' },
@@ -101,11 +111,7 @@ export function DataTable(measurements) {
     ])
   ]);
 
-  const toolbar = el('div', { class: 'flex items-center justify-between mb-3' }, [
-    el('h2', { class: 'text-lg font-semibold flex items-center gap-2' }, [
-      icon('file-up', { size: 16, class: 'text-[var(--color-brand)]' }),
-      t('table.date') + 's'
-    ]),
+  const toolbar = el('div', { class: 'flex justify-end mb-3' }, [
     el('button', {
       class: 'inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] text-sm hover:bg-[var(--color-surface-2)] transition-colors',
       onclick: () => exportCsv(sorted)
@@ -115,7 +121,7 @@ export function DataTable(measurements) {
   return el('div', {}, [
     toolbar,
     el('div', { class: 'rounded-xl border border-[var(--color-border)] overflow-hidden' }, [
-      el('div', { class: 'overflow-x-auto scrollbar-thin' }, table),
+      el('div', { class: 'max-h-[32rem] overflow-auto scrollbar-thin' }, table),
       pagination
     ])
   ]);
