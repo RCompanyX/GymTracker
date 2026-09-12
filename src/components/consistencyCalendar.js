@@ -17,18 +17,20 @@ function state_lang() {
   return document.documentElement.lang || 'es';
 }
 
-function getWeeks(measurements) {
+function getWeeks(measurements, minWeeks = 0) {
   if (measurements.length === 0) return { weeks: [], monthLabels: [] };
   const dates = measurements.map(m => new Date(m.date));
   const minDate = startOfDay(new Date(Math.min(...dates)));
   const maxDate = startOfDay(new Date(Math.max(...dates)));
+  // Keep the activity timeline current even when no recent weigh-ins exist.
+  const displayEnd = new Date(Math.max(maxDate, startOfDay(new Date())));
   const dayOfWeek = (minDate.getDay() + 6) % 7;
   const firstMonday = new Date(minDate);
   firstMonday.setDate(minDate.getDate() - dayOfWeek);
 
-  const lastDayOfWeek = (maxDate.getDay() + 6) % 7;
-  const lastSunday = new Date(maxDate);
-  lastSunday.setDate(maxDate.getDate() + (6 - lastDayOfWeek));
+  const lastDayOfWeek = (displayEnd.getDay() + 6) % 7;
+  const lastSunday = new Date(displayEnd);
+  lastSunday.setDate(displayEnd.getDate() + (6 - lastDayOfWeek));
 
   const measurementByDay = new Map();
   for (const m of measurements) {
@@ -37,7 +39,7 @@ function getWeeks(measurements) {
   }
 
   const totalDays = Math.round((lastSunday - firstMonday) / 86400000) + 1;
-  const totalWeeks = Math.ceil(totalDays / 7);
+  const totalWeeks = Math.max(Math.ceil(totalDays / 7), minWeeks);
 
   const weeks = [];
   const monthLabels = new Array(totalWeeks).fill(null);
@@ -50,10 +52,11 @@ function getWeeks(measurements) {
       cellDate.setDate(firstMonday.getDate() + w * 7 + d);
       const k = dayKey(cellDate);
       const m = measurementByDay.get(k);
-      const inRange = cellDate >= minDate && cellDate <= maxDate;
-      week.push({ date: cellDate, m, inRange });
+      const inRange = cellDate >= minDate && cellDate <= displayEnd;
+      const filler = cellDate > displayEnd;
+      week.push({ date: cellDate, m, inRange, filler });
 
-      if (d === 0 && inRange) {
+      if (d === 0) {
         const month = cellDate.getMonth();
         monthIndices[w] = month;
         const prev = w > 0 ? monthIndices[w - 1] : -1;
@@ -68,10 +71,10 @@ function getWeeks(measurements) {
   return { weeks, monthLabels };
 }
 
-export function ConsistencyCalendar({ measurements }) {
+export function ConsistencyCalendar({ measurements, minWeeks = 0 }) {
   if (measurements.length === 0) return null;
 
-  const { weeks, monthLabels } = getWeeks(measurements);
+  const { weeks, monthLabels } = getWeeks(measurements, minWeeks);
   const totalDays = weeks.flat().filter(c => c.inRange).length;
   const measuredDays = weeks.flat().filter(c => c.m).length;
   const consistency = totalDays > 0 ? (measuredDays / totalDays) * 100 : 0;
@@ -80,36 +83,47 @@ export function ConsistencyCalendar({ measurements }) {
     ? ['L', 'M', 'X', 'J', 'V', 'S', 'D']
     : ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
-  const grid = el('div', { class: 'flex gap-2' });
+  const grid = el('div', { class: 'consistency-scroll scrollbar-thin' },
+    el('div', { class: 'consistency-grid' }));
 
-  const dayLabelsCol = el('div', { class: 'flex flex-col gap-0.5 text-[10px] text-[var(--color-fg-muted)] pr-1 justify-start shrink-0' });
+  const dayLabelsCol = el('div', { class: 'consistency-day-labels text-[10px] text-[var(--color-fg-muted)]' });
   for (let d = 0; d < 7; d++) {
     const isWeekend = d >= 5;
     dayLabelsCol.appendChild(el('div', {
-      class: `w-3 h-3 leading-3 flex items-center justify-center ${isWeekend ? 'opacity-50' : ''}`
+      class: `flex items-center justify-center ${isWeekend ? 'opacity-50' : ''}`
     }, dayLabels[d]));
   }
-  grid.appendChild(dayLabelsCol);
+  const gridContent = grid.firstElementChild;
+  gridContent.appendChild(dayLabelsCol);
 
-  const weeksContainer = el('div', { class: 'flex-1 min-w-0' });
+  const weeksContainer = el('div', {
+    class: 'consistency-weeks-container',
+    style: { width: `min(100%, ${Math.max(0, weeks.length * 14 - 2)}px)` }
+  });
 
-  const monthRow = el('div', { class: 'flex gap-0.5 h-3 text-[10px] text-[var(--color-fg-muted)] mb-0.5' });
+  const weekGridStyle = {
+    gridTemplateColumns: `repeat(${weeks.length}, minmax(var(--calendar-cell-size), 1fr))`
+  };
+  const monthRow = el('div', {
+    class: 'consistency-week-grid consistency-month-row text-[10px] text-[var(--color-fg-muted)] mb-0.5',
+    style: weekGridStyle
+  });
   for (const lbl of monthLabels) {
-    monthRow.appendChild(el('div', { class: 'w-3 shrink-0' }, lbl || ''));
+    monthRow.appendChild(el('div', { class: 'min-w-0 overflow-visible whitespace-nowrap' }, lbl || ''));
   }
   weeksContainer.appendChild(monthRow);
 
-  const weeksRow = el('div', { class: 'flex gap-0.5' });
+  const weeksRow = el('div', { class: 'consistency-week-grid', style: weekGridStyle });
   for (const week of weeks) {
-    const weekCol = el('div', { class: 'flex flex-col gap-0.5' });
+    const weekCol = el('div', { class: 'flex min-w-0 flex-col gap-0.5' });
     for (const cell of week) {
       const title = cell.m
         ? `${fmtDateShort(cell.date.toISOString())} · ${fmtNumber(cell.m.weight, 1)} kg`
         : cell.inRange ? fmtDateShort(cell.date.toISOString()) : '';
       const cellEl = el('div', {
         class: [
-          'w-3 h-3 rounded-sm transition-colors',
-          cell.m ? 'bg-[var(--color-brand)]' : cell.inRange ? 'bg-[var(--color-surface-3)]' : 'bg-transparent'
+          'aspect-square w-full rounded-sm transition-colors',
+          cell.m ? 'bg-[var(--color-brand)]' : cell.inRange || cell.filler ? 'bg-[var(--color-surface-3)]' : 'bg-transparent'
         ].join(' '),
         title
       });
@@ -118,7 +132,7 @@ export function ConsistencyCalendar({ measurements }) {
     weeksRow.appendChild(weekCol);
   }
   weeksContainer.appendChild(weeksRow);
-  grid.appendChild(weeksContainer);
+  gridContent.appendChild(weeksContainer);
 
   const legend = el('div', { class: 'flex flex-wrap items-center gap-2 mt-3 text-xs text-[var(--color-fg-muted)]' }, [
     el('div', { class: 'flex items-center gap-1.5' }, [
@@ -133,7 +147,7 @@ export function ConsistencyCalendar({ measurements }) {
     el('span', { class: 'font-mono' }, `${measuredDays}/${totalDays} ${t('calendar.days')} · ${consistency.toFixed(0)}%`)
   ]);
 
-  return el('div', {
+  const card = el('div', {
     class: 'rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-2)] p-4'
   }, [
     el('div', { class: 'flex items-center gap-2 mb-3' }, [
@@ -143,4 +157,17 @@ export function ConsistencyCalendar({ measurements }) {
     grid,
     legend
   ]);
+
+  if (minWeeks === 0) {
+    requestAnimationFrame(() => {
+      if (!card.isConnected) return;
+      const availableWidth = card.clientWidth - 52;
+      const requiredWeeks = Math.floor(availableWidth / 14);
+      if (requiredWeeks > weeks.length) {
+        card.replaceWith(ConsistencyCalendar({ measurements, minWeeks: requiredWeeks }));
+      }
+    });
+  }
+
+  return card;
 }
