@@ -2,7 +2,7 @@ import { el } from '../lib/dom.js';
 import { state, setTheme, setLang, t } from '../lib/state.js';
 import { setFormatLang } from '../lib/format.js';
 import { pickCsvFile } from '../lib/folder.js';
-import { parseCsvFile } from '../lib/csv.js';
+import { formatCsvError, parseCsvFile } from '../lib/csv.js';
 import { setMeasurements, setError } from '../lib/state.js';
 import { icon } from '../lib/icons.js';
 
@@ -46,7 +46,7 @@ function openCsv() {
       const m = await parseCsvFile(file);
       setMeasurements(m, { fileName: file.name });
     } catch (e) {
-      if (e?.name !== 'AbortError' && e?.message !== 'No se seleccionó archivo') setError(e.message);
+      if (e?.name !== 'AbortError') setError(formatCsvError(e, t));
     }
   };
 }

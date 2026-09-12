@@ -1,6 +1,7 @@
 import { el } from '../lib/dom.js';
 import { fmtDateShort, fmtNumber } from '../lib/format.js';
 import { icon } from '../lib/icons.js';
+import { t } from '../lib/state.js';
 
 function startOfDay(d) {
   const x = new Date(d);
@@ -122,14 +123,14 @@ export function ConsistencyCalendar({ measurements }) {
   const legend = el('div', { class: 'flex flex-wrap items-center gap-2 mt-3 text-xs text-[var(--color-fg-muted)]' }, [
     el('div', { class: 'flex items-center gap-1.5' }, [
       el('div', { class: 'w-3 h-3 rounded-sm bg-[var(--color-surface-3)]' }),
-      el('span', {}, lang === 'es' ? 'Sin registro' : 'No record')
+      el('span', {}, t('calendar.noRecord'))
     ]),
     el('div', { class: 'flex gap-1' }, [
       el('div', { class: 'w-3 h-3 rounded-sm bg-[var(--color-brand)]' })
     ]),
-    el('span', {}, lang === 'es' ? 'Con registro' : 'Recorded'),
+    el('span', {}, t('calendar.recorded')),
     el('div', { class: 'flex-1' }),
-    el('span', { class: 'font-mono' }, `${measuredDays}/${totalDays} ${lang === 'es' ? 'días' : 'days'} · ${consistency.toFixed(0)}%`)
+    el('span', { class: 'font-mono' }, `${measuredDays}/${totalDays} ${t('calendar.days')} · ${consistency.toFixed(0)}%`)
   ]);
 
   return el('div', {
@@ -137,7 +138,7 @@ export function ConsistencyCalendar({ measurements }) {
   }, [
     el('div', { class: 'flex items-center gap-2 mb-3' }, [
       icon('calendar', { size: 16, class: 'text-[var(--color-brand)]' }),
-      el('h3', { class: 'text-sm font-semibold' }, lang === 'es' ? 'Consistencia' : 'Consistency')
+      el('h3', { class: 'text-sm font-semibold' }, t('calendar.title'))
     ]),
     grid,
     legend

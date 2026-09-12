@@ -8,7 +8,11 @@ export function pickCsvFile() {
       const file = input.files?.[0];
       document.body.removeChild(input);
       if (file) resolve(file);
-      else reject(new Error('No se seleccionó archivo'));
+      else {
+        const error = new Error();
+        error.name = 'AbortError';
+        reject(error);
+      }
     };
     document.body.appendChild(input);
     input.click();

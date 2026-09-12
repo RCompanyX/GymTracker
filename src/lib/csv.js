@@ -1,5 +1,17 @@
 import Papa from 'papaparse';
 
+function csvError(key, params = {}) {
+  const error = new Error(key);
+  error.i18nKey = key;
+  error.i18nParams = params;
+  return error;
+}
+
+export function formatCsvError(error, translate) {
+  const message = translate(error?.i18nKey || 'errors.processingFile');
+  return message.replace(/\{(\w+)\}/g, (_, key) => error?.i18nParams?.[key] ?? `{${key}}`);
+}
+
 export const COLUMN_MAP = {
   'Date': 'date',
   'Weight (kg)': 'weight',
@@ -61,11 +73,11 @@ function normalizeDate(raw) {
 export function validateHeaders(headers) {
   const missing = REQUIRED_COLUMNS.filter(r => !headers.includes(r));
   if (missing.length) {
-    throw new Error(`Faltan columnas requeridas: ${missing.join(', ')}`);
+    throw csvError('errors.missingColumns', { columns: missing.join(', ') });
   }
   const matched = BC401_SIGNATURE.filter(c => headers.includes(c)).length;
   if (matched < 4) {
-    throw new Error('Este CSV no parece provenir de una Tanita BC-401 (faltan columnas típicas como BMI, Body Fat, Muscle Mass)');
+    throw csvError('errors.invalidTanitaCsv');
   }
 }
 
@@ -78,7 +90,7 @@ export function parseCsvText(text) {
 
   if (result.errors.length) {
     const fatal = result.errors.find(e => e.type === 'Delimiter' || e.type === 'Quotes');
-    if (fatal) throw new Error(`Error parseando CSV: ${fatal.message}`);
+    if (fatal) throw csvError('errors.parsingCsv', { message: fatal.message });
   }
 
   const headers = result.meta.fields || [];

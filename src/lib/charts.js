@@ -1,6 +1,6 @@
 import ApexCharts from 'apexcharts';
 import { tokens, withAlpha, onThemeChange, currentTheme } from './theme.js';
-import { state } from './state.js';
+import { state, t } from './state.js';
 import { fmtNumber, fmtDate } from './format.js';
 
 const INSTANCES = new Set();
@@ -23,16 +23,16 @@ function buildTooltipHtml(dateIso, m) {
   if (!m) return '';
   const lines = [];
   const fields = [
-    { k: 'weight', label: 'Peso', unit: 'kg' },
-    { k: 'bmi', label: 'IMC', unit: '' },
-    { k: 'bodyFat', label: 'Grasa', unit: '%' },
-    { k: 'viscFat', label: 'G. visceral', unit: '' },
-    { k: 'muscleMass', label: 'Músculo', unit: 'kg' },
-    { k: 'boneMass', label: 'Hueso', unit: 'kg' },
-    { k: 'bmr', label: 'BMR', unit: 'kcal' },
-    { k: 'metabAge', label: 'Edad metab.', unit: 'a' },
-    { k: 'bodyWater', label: 'Agua', unit: '%' },
-    { k: 'physiqueRating', label: 'Complexión', unit: '' }
+    { k: 'weight', label: t('metrics.weight'), unit: 'kg' },
+    { k: 'bmi', label: t('metrics.bmi'), unit: '' },
+    { k: 'bodyFat', label: t('metrics.bodyFat'), unit: '%' },
+    { k: 'viscFat', label: t('metrics.viscFat'), unit: '' },
+    { k: 'muscleMass', label: t('metrics.muscleMass'), unit: 'kg' },
+    { k: 'boneMass', label: t('metrics.boneMass'), unit: 'kg' },
+    { k: 'bmr', label: t('metrics.bmr'), unit: 'kcal' },
+    { k: 'metabAge', label: t('metrics.metabAge'), unit: t('units.years') },
+    { k: 'bodyWater', label: t('metrics.bodyWater'), unit: '%' },
+    { k: 'physiqueRating', label: t('metrics.physiqueRating'), unit: '' }
   ];
   for (const f of fields) {
     if (m[f.k] != null) {
@@ -144,7 +144,7 @@ function buildLineOptions({ points, measurements, unit, label, height = 200 }) {
         borderColor: withAlpha(c.fgMuted, 0.5),
         strokeDashArray: 4,
         label: {
-          text: `avg ${fmtNumber(avg, 1)}${unit ? ' ' + unit : ''}`,
+          text: `${t('chart.average')} ${fmtNumber(avg, 1)}${unit ? ' ' + unit : ''}`,
           style: { color: c.fg, background: c.bg2, fontSize: '10px' },
           position: 'left',
           offsetX: 60
@@ -154,12 +154,12 @@ function buildLineOptions({ points, measurements, unit, label, height = 200 }) {
         maxDate ? {
           x: maxDate, y: max,
           marker: { size: 5, fillColor: c.brand, strokeColor: c.bg, shape: 'circle' },
-          label: { text: `max ${fmtNumber(max, 1)}`, style: { background: c.brand, color: '#fff', fontSize: '10px' }, offsetY: -10, position: 'top' }
+          label: { text: `${t('chart.max')} ${fmtNumber(max, 1)}`, style: { background: c.brand, color: '#fff', fontSize: '10px' }, offsetY: -10, position: 'top' }
         } : {},
         minDate ? {
           x: minDate, y: min,
           marker: { size: 5, fillColor: c.fgMuted, strokeColor: c.bg, shape: 'circle' },
-          label: { text: `min ${fmtNumber(min, 1)}`, style: { background: c.bg2, color: c.fg, fontSize: '10px', borderColor: c.border }, offsetY: 18, position: 'bottom' }
+          label: { text: `${t('chart.min')} ${fmtNumber(min, 1)}`, style: { background: c.bg2, color: c.fg, fontSize: '10px', borderColor: c.border }, offsetY: 18, position: 'bottom' }
         } : {}
       ].filter(p => p.x)
     },
@@ -233,7 +233,7 @@ export async function mountLineChart(container, points, opts = {}) {
             y: chart.w?.globals?.average,
             borderColor: withAlpha(c.fgMuted, 0.5),
             strokeDashArray: 4,
-            label: { text: `avg ${fmtNumber(chart.w?.globals?.average, 1)}`, style: { color: c.fg, background: c.bg2 }, position: 'left', offsetX: 60 }
+            label: { text: `${t('chart.average')} ${fmtNumber(chart.w?.globals?.average, 1)}`, style: { color: c.fg, background: c.bg2 }, position: 'left', offsetX: 60 }
           }]
         }
       }, false, false, true);

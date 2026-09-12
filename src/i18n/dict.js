@@ -20,7 +20,8 @@ export const es = {
     noData: 'Sin datos. Arrastra un CSV para empezar.',
     noMeasurementsInRange: 'No hay pesajes en el rango seleccionado.',
     noMetricsTitle: 'Sin métricas visibles',
-    noMetricsHint: 'Has ocultado todas las métricas. Activa al menos una para ver los gráficos.'
+    noMetricsHint: 'Has ocultado todas las métricas. Activa al menos una para ver los gráficos.',
+    metricNoData: '{metric}: sin datos'
   },
   kpi: {
     currentWeight: 'Peso actual',
@@ -58,6 +59,23 @@ export const es = {
     statisticsHint: 'Valores clave de cada métrica visible.',
     records: 'Registros',
     recordsHint: 'Consulta, ordena y exporta tus mediciones.'
+  },
+  chart: {
+    min: 'mín',
+    max: 'máx',
+    average: 'media'
+  },
+  calendar: {
+    title: 'Consistencia',
+    noRecord: 'Sin registro',
+    recorded: 'Con registro',
+    days: 'días'
+  },
+  errors: {
+    processingFile: 'Error al procesar el archivo',
+    missingColumns: 'Faltan columnas requeridas: {columns}',
+    invalidTanitaCsv: 'Este CSV no parece provenir de una Tanita BC-401 (faltan columnas típicas como BMI, Body Fat y Muscle Mass).',
+    parsingCsv: 'Error al analizar el CSV: {message}'
   },
   table: {
     date: 'Fecha',
@@ -132,7 +150,8 @@ export const en = {
     noData: 'No data. Drop a CSV to get started.',
     noMeasurementsInRange: 'No weigh-ins in the selected range.',
     noMetricsTitle: 'No metrics visible',
-    noMetricsHint: 'You have hidden all metrics. Enable at least one to see the charts.'
+    noMetricsHint: 'You have hidden all metrics. Enable at least one to see the charts.',
+    metricNoData: '{metric}: no data'
   },
   kpi: {
     currentWeight: 'Current weight',
@@ -170,6 +189,23 @@ export const en = {
     statisticsHint: 'Key values for each visible metric.',
     records: 'Records',
     recordsHint: 'Review, sort, and export your measurements.'
+  },
+  chart: {
+    min: 'min',
+    max: 'max',
+    average: 'avg'
+  },
+  calendar: {
+    title: 'Consistency',
+    noRecord: 'No record',
+    recorded: 'Recorded',
+    days: 'days'
+  },
+  errors: {
+    processingFile: 'Error processing the file',
+    missingColumns: 'Required columns are missing: {columns}',
+    invalidTanitaCsv: 'This CSV does not appear to come from a Tanita BC-401 (common columns such as BMI, Body Fat, and Muscle Mass are missing).',
+    parsingCsv: 'Error parsing CSV: {message}'
   },
   table: {
     date: 'Date',

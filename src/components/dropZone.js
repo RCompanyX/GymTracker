@@ -2,7 +2,7 @@ import { el } from '../lib/dom.js';
 import { icon } from '../lib/icons.js';
 import { t } from '../lib/state.js';
 import { setMeasurements, setError } from '../lib/state.js';
-import { parseCsvFile } from '../lib/csv.js';
+import { formatCsvError, parseCsvFile } from '../lib/csv.js';
 
 export function DropZone() {
   let isDragOver = false;
@@ -48,7 +48,7 @@ export function DropZone() {
       const measurements = await parseCsvFile(file);
       setMeasurements(measurements, { fileName: file.name });
     } catch (err) {
-      setError(err.message || 'Error al procesar el archivo');
+      setError(formatCsvError(err, t));
     }
   }
 
@@ -58,8 +58,8 @@ export function DropZone() {
       'data-icon': 'upload-icon'
     }, icon('file-up', { size: 32, 'stroke-width': 1.8 })),
     el('div', {}, [
-      el('div', { class: 'text-base sm:text-lg font-semibold text-[var(--color-fg)]' }, t('empty.dropHere') || 'Arrastra tu CSV aquí'),
-      el('div', { class: 'text-sm text-[var(--color-fg-muted)] mt-1' }, t('empty.dropOrClick') || 'o haz click para elegir un archivo')
+      el('div', { class: 'text-base sm:text-lg font-semibold text-[var(--color-fg)]' }, t('empty.dropHere')),
+      el('div', { class: 'text-sm text-[var(--color-fg-muted)] mt-1' }, t('empty.dropOrClick'))
     ])
   ]);
 
