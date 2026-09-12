@@ -18,12 +18,12 @@ Personal web viewer for **Tanita BC-401** scale measurements. No server or datab
 - **Bilingual** Spanish / English UI with a language switcher.
 - **Lucide icons** throughout the UI.
 - Dismissible, locally calculated **progress highlights** for new lows, milestones, recent changes, and frequent weigh-ins.
-- **No backend**, tracking, or paid licenses. Measurement data is never persisted; drag in your CSV each time you visit.
+- **No backend** or tracking. Measurement data is never persisted; drag in your CSV each time you visit.
 
 ## Stack
 
 - **Build**: Vite 6 + Tailwind v4
-- **Charts**: [ApexCharts](https://apexcharts.com/) (MIT), ~167 KB gzipped
+- **Charts**: [ApexCharts](https://apexcharts.com/), ~167 KB gzipped
 - **Icons**: [Lucide](https://lucide.dev/) (ISC), tree-shaken, ~1.5 KB gzipped
 - **CSV parsing**: PapaParse (MIT)
 - **Dates**: date-fns (MIT)
@@ -84,6 +84,19 @@ The importer recognizes the fields above plus segmental muscle mass, muscle qual
 
 Measurement data stays in memory and is discarded when the page is reloaded. The app only stores these preferences in `localStorage`: theme, language, visible metrics, and dismissed progress highlights.
 
+## Third-Party Licenses
+
+The direct dependencies used by this project are listed below. Their license terms apply when distributing the application or a bundled build; keep the required license notices and attribution.
+
+- [ApexCharts](https://apexcharts.com/license): Community License for qualifying individuals, non-profits, and organizations with under USD 2 million in annual revenue; a paid license may be required otherwise. Its local license also requires attribution for modifications and redistribution.
+- [PapaParse](https://github.com/mholt/PapaParse): MIT License.
+- [date-fns](https://github.com/date-fns/date-fns): MIT License.
+- [Lucide](https://lucide.dev): ISC License.
+- [Vite](https://vite.dev) and [Tailwind CSS](https://tailwindcss.com): MIT License.
+- [Inter](https://fonts.google.com/specimen/Inter) and [JetBrains Mono](https://www.jetbrains.com/lp/mono/): SIL Open Font License 1.1.
+
+This is a dependency inventory, not legal advice. Review the applicable license texts, including those of transitive dependencies, before distributing the app or changing its dependencies.
+
 ## License
 
-MIT.
+[MIT](LICENSE).
