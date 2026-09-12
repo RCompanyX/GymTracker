@@ -2,6 +2,7 @@ export const es = {
   app: { title: 'GymTracker', subtitle: 'Báscula Tanita BC-401' },
   actions: {
     openCsv: 'Abrir CSV',
+    exportCsv: 'Exportar CSV',
     refresh: 'Refrescar',
     exportJson: 'Exportar JSON',
     metrics: 'Métricas',
@@ -132,6 +133,7 @@ export const en = {
   app: { title: 'GymTracker', subtitle: 'Tanita BC-401 scale' },
   actions: {
     openCsv: 'Open CSV',
+    exportCsv: 'Export CSV',
     refresh: 'Refresh',
     exportJson: 'Export JSON',
     metrics: 'Metrics',
